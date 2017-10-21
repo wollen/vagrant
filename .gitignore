@@ -1,0 +1,13 @@
+## git files
+.git/
+.gitconfig
+
+## vagrant files
+*/.vagrant/
+
+## Ansible files
+*/playbook.retry
+
+## Mac directory files
+.DS_Store
+Thumbs.db

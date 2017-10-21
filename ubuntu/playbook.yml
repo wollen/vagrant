@@ -1,0 +1,27 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: "add jaist to sources.list"
+      replace: >
+        dest='/etc/apt/sources.list'
+        regexp='http://(..\.)?(archive|security)\.ubuntu\.com/ubuntu'
+        replace='http://ftp.jaist.ac.jp/pub/Linux/ubuntu'
+
+    - name: install dependencies
+      apt: pkg={{ item }} state=latest update_cache=yes
+      with_items:
+        - git
+        - docker
+        - docker-compose
+
+    - name: make gourp docker
+      group:
+        name: 'docker'
+
+    - name: add user vagrant to group docker
+      user:
+        name: 'vagrant'
+        append: yes
+        group: 'docker'

@@ -1,0 +1,39 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: remove old docker and dependencies
+      yum: name={{ item }} state=removed
+      with_items:
+        - docker
+        - docker-common
+        - container-selinux
+        - docker-selinux
+        - docker-engine
+
+    - name: install fastestmirror
+      yum: name=yum-plugin-fastestmirror state=latest
+
+    - name: Add docker repository
+      yum_repository:
+        name: docker
+        description: docker repo
+        baseurl: https://yum.dockerproject.org/repo/main/centos/$releasever/
+
+    - name: install git, docker and others
+      yum: name={{ item }} state=latest
+      with_items:
+        - git
+        - docker-io
+        - docker-compose
+
+    - name: make gourp docker
+      group:
+        name: 'docker'
+
+    - name: add user vagrant to group docker
+      user:
+        name: 'vagrant'
+        append: yes
+        group: 'docker'
